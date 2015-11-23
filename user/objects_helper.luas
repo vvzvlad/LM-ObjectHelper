@@ -1,0 +1,36 @@
+objects = {}
+
+function objects:set(object_name, object_type, object_value)
+  set_table = {}
+  if (object_type == 'units') then set_table.units = object_value end
+  if (object_type == 'disablelog') then set_table.disablelog = object_value end
+  if (object_type == 'tagcache') then set_table.tagcache = object_value end
+  if (object_type == 'datatype') then set_table.datatype = object_value end
+  if (object_type == 'export') then set_table.export = object_value end
+  if (object_type == 'highpriolog') then set_table.highpriolog = object_value end
+  if (object_type == 'comment') then set_table.comment = object_value end
+  if (object_type == 'name') then set_table.name = object_value end
+  if (object_type == 'pollinterval') then set_table.pollinterval = object_value end
+  if (object_type ~= 'units' and object_type ~= 'disablelog' and object_type ~= 'tagcache' and object_type ~= 'datatype' and object_type ~= 'export' and object_type ~= 'highpriolog' and object_type ~= 'comment' and object_type ~= 'name' and object_type ~= 'pollinterval' and object_type ~= 'units' ) then e = 'Error object value name' end
+  r = db:getall('SELECT name FROM objects WHERE name=?', object_name)
+  if (r[1] == nil) then e = 'Error object name' end
+  if (e == nil) then
+    r, e = db:update('objects', set_table, { name = object_name })
+  end
+  return e
+end
+
+function objects:get(object_name)
+  object_query = 'SELECT * FROM objects WHERE name=?'
+  object_table = db:getall(object_query, object_name)
+  if (object_table[1] == nil) then
+    e = 'Error object name'
+    object_table = nil
+  end  
+  return e, object_table[1]
+end
+
+
+--e = objects:set('PRESSURE_Netatmo', 'units', 'mbar')
+
+--e, r = objects:get('BAT_Netatmo_outdoor')
